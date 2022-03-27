@@ -2,29 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestTrigger : MonoBehaviour
+public class ChangeColor : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    private GameObject sphere;
+    private Vector3 bigScale;
+    private Vector3 smallScale;
 
+    void getSphere()
+    {
+        sphere = GameObject.Find("Left Ball");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
+        sphere = GameObject.Find("Left Ball");
 
+        smallScale = sphere.transform.localScale / 2;
+        bigScale = sphere.transform.localScale * 2;
     }
 
     void OnTriggerEnter(Collider other)
     {
-        Renderer render = GetComponent<Renderer>();
-        render.material.color = Color.green;
+        sphere.transform.localScale = Vector3.Lerp(sphere.transform.localScale, bigScale, 2.0f * Time.deltaTime);
+        Renderer renderer = GetComponent<Renderer>();
+        renderer.material.color = Color.green;
     }
 
     void OnTriggerExit(Collider other)
     {
-        Renderer render = GetComponent<Renderer>();
-        render.material.color = Color.red;
+        sphere.transform.localScale = Vector3.Lerp(sphere.transform.localScale, smallScale, 2.0f * Time.deltaTime);
+        Renderer renderer = GetComponent<Renderer>();
+        renderer.material.color = Color.red;
     }
 }
