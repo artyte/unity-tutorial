@@ -5,33 +5,56 @@ using UnityEngine;
 public class ChangeColor : MonoBehaviour
 {
     private GameObject sphere;
-    private Vector3 bigScale;
-    private Vector3 smallScale;
+    private Vector3 originalScale;
+    private Vector3 startScale;
+    private Vector3 endScale;
 
-    void getSphere()
-    {
-        sphere = GameObject.Find("Left Ball");
-    }
+    private float desiredDuration = 3f;
+    private float elapsedTime = 3f;
+
+    private bool[] grab = { false, false };
 
     private void Start()
     {
-        sphere = GameObject.Find("Left Ball");
+        originalScale = transform.localScale;
+        startScale = originalScale;
+        endScale = originalScale;
+    }
 
-        smallScale = sphere.transform.localScale / 2;
-        bigScale = sphere.transform.localScale * 2;
+    private void Update()
+    {
+        
+        if (grab[0] != grab[1])
+        {
+            elapsedTime = 0f;
+            grab[1] = grab[0];
+        }
+        if (grab[0] == grab[1] && elapsedTime < desiredDuration)
+        {
+            elapsedTime += Time.deltaTime;
+        }
+
+        float percentageComplete = elapsedTime / desiredDuration;
+        transform.localScale = Vector3.Lerp(startScale, endScale, percentageComplete);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        sphere.transform.localScale = Vector3.Lerp(sphere.transform.localScale, bigScale, 2.0f * Time.deltaTime);
         Renderer renderer = GetComponent<Renderer>();
         renderer.material.color = Color.green;
+        startScale = originalScale;
+        endScale = originalScale * 2;
+        grab[0] = true;
+        grab[1] = false;
     }
 
     void OnTriggerExit(Collider other)
     {
-        sphere.transform.localScale = Vector3.Lerp(sphere.transform.localScale, smallScale, 2.0f * Time.deltaTime);
         Renderer renderer = GetComponent<Renderer>();
         renderer.material.color = Color.red;
+        startScale = originalScale * 2;
+        endScale = originalScale;
+        grab[0] = false;
+        grab[1] = true;
     }
 }
