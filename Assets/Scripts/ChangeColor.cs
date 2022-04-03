@@ -4,57 +4,71 @@ using UnityEngine;
 
 public class ChangeColor : MonoBehaviour
 {
-    private GameObject sphere;
     private Vector3 originalScale;
-    private Vector3 startScale;
-    private Vector3 endScale;
 
     private float desiredDuration = 3f;
     private float elapsedTime = 3f;
 
-    private bool[] grab = { false, false };
+    private bool balloon;
+
+    [SerializeField]
+    private AnimationCurve curve;
 
     private void Start()
     {
         originalScale = transform.localScale;
-        startScale = originalScale;
-        endScale = originalScale;
     }
 
     private void Update()
     {
-        
-        if (grab[0] != grab[1])
-        {
-            elapsedTime = 0f;
-            grab[1] = grab[0];
-        }
-        if (grab[0] == grab[1] && elapsedTime < desiredDuration)
+        if (balloon)
         {
             elapsedTime += Time.deltaTime;
+            float percentageComplete = elapsedTime / desiredDuration;
+            transform.localScale = Vector3.Lerp(originalScale, originalScale * 2, curve.Evaluate(percentageComplete));
+        } else
+        {
+            elapsedTime += Time.deltaTime;
+            float percentageComplete = elapsedTime / desiredDuration;
+            transform.localScale = Vector3.Lerp(originalScale * 2, originalScale, curve.Evaluate(percentageComplete));
         }
 
-        float percentageComplete = elapsedTime / desiredDuration;
-        transform.localScale = Vector3.Lerp(startScale, endScale, percentageComplete);
+        if (elapsedTime > desiredDuration)
+        {
+            elapsedTime = desiredDuration;
+        }
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider collided)
     {
-        Renderer renderer = GetComponent<Renderer>();
-        renderer.material.color = Color.green;
-        startScale = originalScale;
-        endScale = originalScale * 2;
-        grab[0] = true;
-        grab[1] = false;
+        if (collided.gameObject.name == "Plane")
+        {
+            expand();
+            elapsedTime = desiredDuration - elapsedTime;
+        }
     }
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider justSeperated)
     {
-        Renderer renderer = GetComponent<Renderer>();
-        renderer.material.color = Color.red;
-        startScale = originalScale * 2;
-        endScale = originalScale;
-        grab[0] = false;
-        grab[1] = true;
+        if (justSeperated.gameObject.name == "Plane")
+        {
+            contract();
+            elapsedTime = desiredDuration - elapsedTime;
+        }
+    }
+
+    void expand()
+    {
+        Renderer sphere = GetComponent<Renderer>();
+        sphere.material.color = Color.green;
+        balloon = true;
+        
+    }
+
+    void contract()
+    {
+        Renderer sphere = GetComponent<Renderer>();
+        sphere.material.color = Color.red;
+        balloon = false;
     }
 }
