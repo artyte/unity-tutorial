@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class LevelLoader : MonoBehaviour
 {
     public int buildNum = 1;
-    public string SceneName = "Level 2";
+    public string SceneName = "Level2";
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +22,7 @@ public class LevelLoader : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
     {
         GameObject collided = collider.gameObject;
-        if (collided.name == "Player")
+        if (collided.name == "Ball")
         {
             SceneManager.LoadScene(SceneName);
         }
