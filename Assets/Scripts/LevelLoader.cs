@@ -5,12 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
-    public int buildNum = 1;
-    public string SceneName = "Level2";
+    public int buildNum;
+    public string SceneName;
+    //Scene scene;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        //scene = SceneManager.GetActiveScene();
+        //Debug.Log("Active Scene name is: " + scene.name + "\nActive Scene index: " + scene.buildIndex);
     }
 
     // Update is called once per frame
@@ -22,9 +25,10 @@ public class LevelLoader : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
     {
         GameObject collided = collider.gameObject;
-        if (collided.name == "Ball")
+        Debug.Log(collided.name);
+        if (collided.name == "Ball" || collided.name == "LeftHand Controller" || collided.name == "RightHand Controller")
         {
-            SceneManager.LoadScene(buildNum);
+            SceneManager.LoadScene(SceneName);
         }
     }
 }
