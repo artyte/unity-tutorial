@@ -24,7 +24,7 @@ public class LevelLoader : MonoBehaviour
         GameObject collided = collider.gameObject;
         if (collided.name == "Ball")
         {
-            SceneManager.LoadScene(SceneName);
+            SceneManager.LoadScene(buildNum);
         }
     }
 }
