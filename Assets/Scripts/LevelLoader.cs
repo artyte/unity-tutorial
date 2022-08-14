@@ -25,8 +25,7 @@ public class LevelLoader : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
     {
         GameObject collided = collider.gameObject;
-        Debug.Log(collided.name);
-        if (collided.name == "Ball" || collided.name == "LeftHand Controller" || collided.name == "RightHand Controller")
+        if (collided.name == "Player")
         {
             SceneManager.LoadScene(SceneName);
         }
